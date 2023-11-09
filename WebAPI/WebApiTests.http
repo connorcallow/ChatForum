@@ -1,0 +1,12 @@
+// log in as Mrs. Kelly
+POST https://localhost:5156/auth/login
+Content-Type: application/json
+
+{ "Username" : "Mrs. Kelly", "Password" : "money" }
+
+###
+GET https://localhost:5156/test/authorized
+
+###
+GET https://localhost:5156/test/authorized
+Authorization: Bearer eyJhbGciOiJIUzUxMiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiJKV1RTZXJ2aWNlQWNjZXNzVG9rZW4iLCJqdGkiOiI5MzMzMDE2MS1lNWRlLTRmZTktODI4NS0yOTI2M2JkZmNmZDAiLCJpYXQiOiIxMS83LzIwMjMgOTowMjozOCBQTSIsImh0dHA6Ly9zY2hlbWFzLnhtbHNvYXAub3JnL3dzLzIwMDUvMDUvaWRlbnRpdHkvY2xhaW1zL25hbWUiOiJNcnMuIEtlbGx5IiwiZXhwIjoxNjk5Mzk0NTU4LCJpc3MiOiJKV1RBdXRoZW50aWNhdGlvblNlcnZlciIsImF1ZCI6IkpXVFNlcnZpY2VCbGF6b3JXYXNtQ2xpZW50In0.vIkljuimmgrVXz5uqdMz0H6h_-oDpU143QJH244UrxDAYXbx4710QR7qUBLjkfc-tONu3-WdWavRDb0EsJAzOA

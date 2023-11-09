@@ -1,0 +1,112 @@
+@page "/CreateMessage"
+@using HttpClients.ClientInterfaces
+@using Domain.Models
+@using Domain.DTOs
+@using HttpClients
+@inject IUserService userService
+@inject IMessageService messageService
+@inject NavigationManager navMgr
+
+<div class="card">
+    @if (users == null)
+    {
+        <label>Loading users...</label>
+    }
+    else if (!users.Any())
+    {
+        <label>No users, you cannot create a Message without assignee.</label>
+    }
+    else
+    {
+        <h3>Create Message</h3>
+        
+        <div class="form-group field">
+            <label>Author (Username):</label>
+            <input type="text" @bind="authorUsername" />
+        </div>
+        
+        <div class="form-group field">
+            <label>Title:</label>
+            <input type="text" @bind="messageTitle" />
+        </div>
+        
+        <div class="form-group field">
+            <label>Body:</label>
+            <input type="text" @bind="messageBody" />
+        </div>
+        <div class="button-row">
+            @if (!string.IsNullOrEmpty(msg))
+            {
+                <label style="color: red">@msg</label>
+            }
+            <AuthorizeView>
+                <Authorized>
+                <button @onclick="Create" class="acceptbtn">Create</button>
+                </Authorized>
+            </AuthorizeView>
+        </div>
+    }
+</div>
+
+@code {
+    private IEnumerable<User>? users;
+    private string authorUsername; // Change the type to string
+    private string messageTitle = "";
+    private string messageBody = "";
+    private string msg = "";
+
+    protected override async Task OnInitializedAsync()
+    {
+        msg = "";
+        try
+        {
+            users = await userService.GetUsersAsync();
+        }
+        catch (Exception e)
+        {
+            Console.WriteLine(e);
+            msg = e.Message;
+        }
+    }
+
+    private async Task Create()
+    {
+        msg = "";
+        if (string.IsNullOrEmpty(authorUsername))
+        {
+            msg = "You must enter an assignee!";
+            return;
+        }
+        if (string.IsNullOrEmpty(messageTitle))
+        {
+            msg = "Title cannot be empty!";
+            return;
+        }
+        if (string.IsNullOrEmpty(messageBody))
+        {
+            msg = "Body cannot be empty!";
+            return;
+        }
+
+        try
+        {
+    // Retrieve the user by username to get the corresponding Id
+            User user = users.FirstOrDefault(u => u.UserName == authorUsername);
+            if (user == null)
+            {
+                msg = "Author not found!";
+                return;
+            }
+
+            MessageCreationDto dto = new(user.Id, messageTitle, messageBody);
+            await messageService.CreateAsync(dto);
+            navMgr.NavigateTo("/");
+        }
+        catch (Exception e)
+        {
+            Console.WriteLine(e);
+            msg = e.Message;
+        }
+    }
+
+}

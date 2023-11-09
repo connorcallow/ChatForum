@@ -1,0 +1,63 @@
+@page "/SeeMore/{id:int}"
+@using Domain.DTOs
+@using HttpClients
+@using HttpClients.ClientInterfaces
+@using Microsoft.AspNetCore.Components
+@inject IMessageService messageService
+@inject NavigationManager navMgr
+
+<div class="card">
+    @if (dto == null)
+    {
+        <label>Loading Message data...</label>
+    }
+    else
+    {
+        <h3>Message Details</h3>
+        <div class="form-group field">
+            <label>Author:</label>
+            <p>@dto.OwnerName</p>
+        </div>
+        <div class="form-group field">
+            <label>Title:</label>
+            <p>@dto.Title</p>
+        </div>
+        <div class="form-group field">
+            <label>Body:</label>
+            <p>@dto.Body</p>
+        </div>
+        <div class="button-row">
+            <button @onclick="GoBack" class="backbtn">Go Back</button>
+        </div>
+    }
+    @if (!string.IsNullOrEmpty(msg))
+    {
+        <label style="color: red">@msg</label>
+    }
+</div>
+
+@code {
+    [Parameter]
+    public int Id { get; set; }
+    private MessageBasicDto dto = null!;
+    private string msg = "";
+
+    protected override async Task OnInitializedAsync()
+    {
+        msg = "";
+        try
+        {
+            dto = await messageService.GetByIdAsync(Id);
+        }
+        catch (Exception e)
+        {
+            Console.WriteLine(e);
+            msg = e.Message;
+        }
+    }
+
+    private void GoBack()
+    {
+        navMgr.NavigateTo("/ViewMessages");
+    }
+}

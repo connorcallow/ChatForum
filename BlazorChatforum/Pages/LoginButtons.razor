@@ -1,0 +1,29 @@
+@using HttpClients.ClientInterfaces
+@inject NavigationManager navMgr
+@inject IAuthService authService
+
+
+
+<AuthorizeView>
+    <Authorized>
+        <LoginButton @onclick="Logout">Logout</LoginButton>
+   </Authorized>
+    <NotAuthorized>
+        <LoginButton @onclick="Login">Login</LoginButton>
+        </NotAuthorized>
+</AuthorizeView>
+
+@code {
+
+    private void Login()
+    {
+        navMgr.NavigateTo("/Login");
+    }
+
+    private async Task Logout()
+    {
+        await authService.LogoutAsync();
+        navMgr.NavigateTo("/");
+    }
+
+}
