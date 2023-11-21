@@ -23,7 +23,7 @@ public class MessageLogic : IMessageLogic
         {
             throw new Exception($"User with id {dto.OwnerId} was not found.");
         }
-        Message message = new Message(user, dto.Title, dto.Body);
+        Message message = new Message(user.Id, dto.Title, dto.Body);
         ValidateMessage(message);
         
         Message created = await messageDao.CreateAsync(message);
@@ -55,13 +55,11 @@ public class MessageLogic : IMessageLogic
             }
         }
 
-       
-
         User userToUse = user ?? existing.Owner;
         string titleToUse = dto.Title ?? existing.Title;
         string bodyToUse = dto.Body ?? existing.Body;
     
-        Message updated = new (userToUse, titleToUse, bodyToUse)
+        Message updated = new (userToUse.Id, titleToUse, bodyToUse)
         {
             Body = bodyToUse,
             Id = existing.Id,
@@ -79,9 +77,6 @@ public class MessageLogic : IMessageLogic
         {
             throw new Exception($"Message with ID {id} was not found!");
         }
-
-        
-
         await messageDao.DeleteAsync(id);
     }
     
